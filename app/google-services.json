@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "862355516959",
+    "firebase_url": "https://coursesocialmedia-30764.firebaseio.com",
+    "project_id": "coursesocialmedia-30764",
+    "storage_bucket": "coursesocialmedia-30764.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862355516959:android:dd7b13f2e8fc3e55c2af2a",
+        "android_client_info": {
+          "package_name": "com.amirmohammed.coursesocialmedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862355516959-7stckljmon8tk0hpdmh6e5cb6rkfuj1t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amirmohammed.coursesocialmedia",
+            "certificate_hash": "c925d7f481f4fcd3ec09ba94466738469f39719d"
+          }
+        },
+        {
+          "client_id": "862355516959-vfdj4p43ka0c7frdkad4r62idi3k0j9e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfCjcXfv02y_jDIU_5qb34xRVaAahSwic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862355516959-vfdj4p43ka0c7frdkad4r62idi3k0j9e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
