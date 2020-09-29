@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +40,8 @@ public class ProfileActivity extends AppCompatActivity {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,8 @@ public class ProfileActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.profile_et_username);
         editTextPhoneNumber = findViewById(R.id.profile_et_phone_number);
         buttonSave = findViewById(R.id.profile_btn_save);
+
+        sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
 
         getUserDataFromFirestore();
 
@@ -115,6 +120,8 @@ public class ProfileActivity extends AppCompatActivity {
                             firestore.collection("Users")
                                     .document(auth.getUid()).update(map);
 
+                            sharedPreferences.edit().putString("userProfileLink", profileUrl).apply();
+
                         } else {
                             String errorMessage = task.getException().getMessage();
                             Toast.makeText(ProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
@@ -143,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
         uploadUserDataToFirestore(user);
     }
 
-    private void uploadUserDataToFirestore(User user) {
+    private void uploadUserDataToFirestore(final User user) {
         firestore.collection("Users").document(auth.getUid())
                 .set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -151,6 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(ProfileActivity.this, "User data updated",
                             Toast.LENGTH_SHORT).show();
+
+                    sharedPreferences.edit().putString("username", user.getUsername()).apply();
+
                 } else {
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(ProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
