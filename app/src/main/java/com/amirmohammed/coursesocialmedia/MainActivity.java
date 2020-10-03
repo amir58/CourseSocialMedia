@@ -59,13 +59,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        postAdapter = new PostAdapter(posts);
+        postAdapter = new PostAdapter(posts, commentI);
         recyclerView.setAdapter(postAdapter);
 
         getPostsFromCloud();
 
 //        getUserData();
     }
+
+    CommentI commentI = new CommentI() {
+        @Override
+        public void onCommentLayoutClick(String postId) {
+            CommentListDialogFragment.newInstance(postId)
+                    .show(getSupportFragmentManager(), "CommentDialog");
+        }
+    };
 
     private void getDataFromUi() {
         String content = editTextPost.getText().toString();
@@ -80,12 +88,15 @@ public class MainActivity extends AppCompatActivity {
         post.setUsername(myShared.getString("username", "Guest"));
         post.setUserProfile(myShared.getString("userProfileLink", ""));
         post.setUserId(FirebaseAuth.getInstance().getUid());
+        post.setPostId(String.valueOf(System.currentTimeMillis()));
 
         pushPostToDatabase(post);
     }
 
     private void pushPostToDatabase(Post post) {
-        firestore.collection("posts").document().set(post)
+        firestore.collection("posts")
+                .document(post.getPostId())
+                .set(post)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -131,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
         firestore.collection("posts")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                        @Nullable FirebaseFirestoreException e) {
                         posts.clear();
 
                         for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
@@ -139,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
                             posts.add(post);
                         }
 
-                        postAdapter.notifyDataSetChanged();
+                        if (!posts.isEmpty()) postAdapter.notifyDataSetChanged();
+
                     }
                 });
     }
@@ -171,5 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
 
 }

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,9 +27,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     private List<Post> posts;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private CommentI commentI;
 
-    public PostAdapter(List<Post> posts) {
+    PostAdapter(List<Post> posts, CommentI commentI) {
         this.posts = posts;
+        this.commentI = commentI;
     }
 
     @NonNull
@@ -39,7 +42,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final PostHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final PostHolder holder, final int position) {
         final Post post = posts.get(position);
 
         holder.textViewUsername.setText(post.getUsername());
@@ -72,6 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                                             .document(auth.getUid())
                                             .set(new Likes(auth.getUid()));
                                     holder.imageViewLike.setImageResource(R.drawable.ic_like_pressed);
+                                    notifyDataSetChanged();
 
                                 } else {
 
@@ -82,47 +86,74 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                                             .delete();
 
                                     holder.imageViewLike.setImageResource(R.drawable.ic_like);
+                                    notifyDataSetChanged();
                                 }
 
                             }
                         });
 
 //                firestore.collection("posts")
-//                        .document(post.getPostId())
+//                        .document(posts.get(position).getPostId())
 //                        .collection("likes")
-//                        .whereEqualTo("name", auth.getUid())
+//                        .document(auth.getUid())
 //                        .get()
-//                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //                            @Override
-//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                Likes likes = task.getResult().toObject(Likes.class);
+//
+//                                if (likes == null) {
+//                                    holder.imageViewLike.setImageResource(R.drawable.ic_like_pressed);
+//                                    notifyDataSetChanged();
+//
+//                                } else {
+//                                    holder.imageViewLike.setImageResource(R.drawable.ic_like);
+//                                    notifyDataSetChanged();
+//                                }
 //
 //                            }
 //                        });
 
+                holder.linearLayoutComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        commentI.onCommentLayoutClick(post.getPostId());
+                    }
+                });
 
             }
         });
 
+        try {
+            firestore.collection("posts")
+                    .document(post.getPostId())
+                    .collection("likes")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                int likes = Objects.requireNonNull(task.getResult()).size();
+                                String message = "Like (" + likes + ")";
+                                holder.textViewLike.setText(message);
+                            }
 
-        firestore.collection("posts")
-                .document(post.getPostId())
-                .collection("likes")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            int likes = Objects.requireNonNull(task.getResult()).size();
-                            String message = "Like (" + likes + ")";
-                            holder.textViewLike.setText(message);
                         }
-                    }
-                });
+                    });
+
+        } catch (Exception e) {
+            Toast.makeText(holder.itemView.getContext(), e.getMessage()
+                    , Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public int getItemCount() {
         return posts.size();
+    }
+
+    private void likeUnLikePost() {
+
     }
 
     class PostHolder extends RecyclerView.ViewHolder {
@@ -141,8 +172,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
             linearLayoutLike = itemView.findViewById(R.id.post_like_layout);
             linearLayoutComment = itemView.findViewById(R.id.post_comment_layout);
-
-
         }
     }
 }

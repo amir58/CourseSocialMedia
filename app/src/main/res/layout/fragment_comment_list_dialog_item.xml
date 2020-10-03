@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/list_item_spacing"
+    android:paddingTop="@dimen/list_item_spacing_half"
+    android:paddingRight="@dimen/list_item_spacing"
+    android:paddingBottom="@dimen/list_item_spacing_half">
+
+    <ImageView
+        android:id="@+id/item_comment_iv_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:textSize="@dimen/_18ssp"
+        android:textStyle="bold"
+        android:id="@+id/item_comment_tv_username"
+        android:layout_width="0dp"
+        android:paddingStart="@dimen/_5sdp"
+        android:layout_height="wrap_content"
+        android:text="Amir Mohammed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/item_comment_tv_content"
+        app:layout_constraintStart_toEndOf="@id/item_comment_iv_profile"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:textSize="@dimen/_16ssp"
+        android:id="@+id/item_comment_tv_content"
+        android:layout_width="0dp"
+        android:paddingStart="@dimen/_5sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:text="Comment content "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_comment_iv_profile"
+        app:layout_constraintTop_toBottomOf="@+id/item_comment_tv_username" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

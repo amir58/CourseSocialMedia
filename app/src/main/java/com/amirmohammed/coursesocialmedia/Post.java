@@ -1,17 +1,31 @@
 package com.amirmohammed.coursesocialmedia;
 
+import java.util.List;
+
 public class Post {
 
-    private String userId, username, userProfile, content;
+    private String postId, userId, username, userProfile, content;
+
+    private List<Likes> likes;
 
     public Post() {
     }
 
-    public Post(String userId, String username, String userProfile, String content) {
+    public Post(String postId, String userId, String username, String userProfile, String content, List<Likes> likes) {
+        this.postId = postId;
         this.userId = userId;
         this.username = username;
         this.userProfile = userProfile;
         this.content = content;
+        this.likes = likes;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getUserId() {
@@ -46,4 +60,11 @@ public class Post {
         this.content = content;
     }
 
+    public List<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Likes> likes) {
+        this.likes = likes;
+    }
 }
